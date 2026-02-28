@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Méthode LOG | Trading Institutionnel (SMC)</title>
+    <!-- Tailwind CSS pour le design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono pour les données -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        batman: {
+                            950: '#030303',
+                            900: '#0a0a0a',
+                            800: '#121212',
+                            700: '#1e1e1e',
+                            accent: '#ffffff',
+                            bullish: '#22c55e', // Vert institutionnel
+                            bearish: '#ef4444', // Rouge institutionnel
+                            liquidity: '#eab308' // Jaune or pour l'argent
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #030303;
+            color: #a3a3a3;
+        }
+
+        /* Effet de grain "Film/Terminal" */
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Animations d'apparition */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Grille de fond technique */
+        .bg-grid {
+            background-size: 50px 50px;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Lueur néon subtile */
+        .glow-box {
+            box-shadow: 0 0 50px -15px rgba(255, 255, 255, 0.07);
+        }
+
+        .glow-green {
+            box-shadow: 0 0 40px -10px rgba(34, 197, 94, 0.15);
+        }
+
+        .glow-red {
+            box-shadow: 0 0 40px -10px rgba(239, 68, 68, 0.15);
+        }
+
+        /* Ligne de timeline */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1) 5%, rgba(255, 255, 255, 0.1) 95%, transparent);
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-line::before {
+                left: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-white selection:text-black relative overflow-x-hidden">
+
+    <!-- Effet de grain global -->
+    <div class="noise-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-40 bg-batman-950/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="text-white font-bold tracking-widest text-sm uppercase flex items-center gap-3">
+                <i data-lucide="crosshair" class="w-5 h-5 text-batman-bullish"></i>
+                <span><span class="opacity-40">LA</span> MÉTHODE LOG</span>
+            </div>
+            <a href="#video-section"
+                class="text-xs font-semibold uppercase tracking-widest text-white border border-white/20 px-5 py-2.5 hover:bg-white hover:text-black transition-all duration-300">
+                Accéder au cours
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-40 pb-20 px-6 min-h-[95vh] flex flex-col items-center justify-center bg-grid">
+        <!-- Lueur d'arrière plan -->
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-[150px] pointer-events-none">
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center relative z-10 reveal">
+            <a href="#story-section"
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-white/80 uppercase tracking-widest mb-10 hover:bg-white/10 transition-colors cursor-pointer backdrop-blur-sm">
+                <span class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-batman-bullish opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-batman-bullish"></span>
+                </span>
+                Rejoint par +1000 traders sur Instagram
+            </a>
+
+            <h1 class="text-6xl md:text-7xl lg:text-8xl font-bold text-white tracking-tighter mb-8 leading-[1.05]">
+                La mécanique de la <br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/30">précision
+                    absolue.</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-white/60 max-w-3xl mx-auto mb-14 font-light leading-relaxed">
+                J'exploite les inefficiences du marché et la liquidité piégée avec une rigueur algorithmique. Fini les
+                indicateurs miracles. Découvrez la logique institutionnelle (SMC) dévoilée de A à Z.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a href="#video-section"
+                    class="w-full sm:w-auto flex items-center justify-center gap-3 bg-white text-black px-10 py-5 text-sm font-bold uppercase tracking-widest hover:bg-gray-200 transition-all hover:scale-105 duration-300 shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                    <i data-lucide="play" class="w-5 h-5 fill-black"></i>
+                    Visionner la Masterclass
+                </a>
+                <a href="#fundamentals"
+                    class="w-full sm:w-auto flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-widest text-white/50 hover:text-white transition-colors py-5">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    Lire le manifeste
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FONDAMENTAUX / POURQUOI ÇA MARCHE (REFONTE PROFONDE) -->
+    <section id="fundamentals" class="py-32 px-6 bg-batman-900 border-y border-white/5 relative overflow-hidden">
+        <!-- Effets de fond -->
+        <div
+            class="absolute top-0 right-0 w-[800px] h-[800px] bg-white/[0.01] rounded-full blur-[120px] pointer-events-none translate-x-1/3 -translate-y-1/3">
+        </div>
+
+        <div class="max-w-6xl mx-auto relative z-10">
+
+            <div class="text-center max-w-4xl mx-auto mb-20 reveal">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-batman-950 text-xs text-white/50 uppercase tracking-widest mb-8 font-mono shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+                    <i data-lucide="unlock" class="w-3 h-3"></i> Le Secret Bancaire
+                </div>
+                <h2 class="text-4xl md:text-6xl font-bold text-white mb-8 leading-[1.1] tracking-tight">
+                    Le marché ne cherche pas la direction. <br>
+                    <span class="text-white/30">Il cherche la liquidité.</span>
+                </h2>
+                <p class="text-xl text-white/60 font-light leading-relaxed">
+                    Si vous tradez avec des lignes de tendance, des figures géométriques ou des indicateurs classiques
+                    (RSI, MACD), vous jouez exactement le jeu que les algorithmes bancaires ont prévu pour vous. Vous
+                    êtes la proie.
+                </p>
+            </div>
+
+            <!-- Explication mécanique (Le problème des gros portefeuilles) -->
+            <div class="bg-batman-950 border border-white/10 rounded-2xl p-8 md:p-12 mb-16 reveal relative glow-box">
+                <div class="absolute top-0 left-0 w-2 h-full bg-batman-liquidity rounded-l-2xl"></div>
+
+                <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <i data-lucide="building-2" class="w-6 h-6 text-batman-liquidity"></i>
+                    Le problème des 500 Millions (La Mécanique Institutionnelle)
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-10 text-white/60 text-sm md:text-base leading-relaxed font-light">
+                    <div class="space-y-4">
+                        <p>
+                            Imaginez que vous êtes une banque d'investissement. Vous devez exécuter un ordre
+                            d'<strong>achat de 500 millions d'euros</strong> sur l'EUR/USD. Vous ne pouvez pas
+                            simplement cliquer sur "Acheter" sur votre plateforme.
+                        </p>
+                        <p>
+                            Si vous faites ça, votre ordre est tellement massif qu'il va vider le carnet d'ordres et
+                            faire exploser le prix à la hausse. Résultat ? Vous achèteriez à un prix catastrophique.
+                        </p>
+                        <p>
+                            Pour acheter secrètement 500 millions sans faire bouger le marché prématurément, <strong
+                                class="text-white">il vous faut obligatoirement 500 millions de vendeurs en face de
+                                vous</strong> (la contrepartie). Mais où trouver autant de vendeurs au même moment et au
+                            même prix ?
+                        </p>
+                    </div>
+                    <div class="space-y-4 bg-[#0a0a0a] border border-white/5 p-6 rounded-xl">
+                        <h4 class="text-white font-semibold flex items-center gap-2 mb-3">
+                            <i data-lucide="crosshair" class="w-4 h-4 text-red-400"></i> Dans vos Stop-Loss.
+                        </h4>
+                        <p>
+                            Qu'est-ce qu'un "Stop-Loss" posé par un trader particulier qui a acheté un support ? <strong
+                                class="text-white">C'est un ordre de vente automatique.</strong>
+                        </p>
+                        <p>
+                            Les algorithmes bancaires manipulent donc le prix à la baisse. Ils cassent volontairement un
+                            "support" évident. Tous les traders particuliers paniquent, leurs Stop-Loss sont déclenchés
+                            (ce qui génère des millions d'ordres de vente).
+                        </p>
+                        <p class="text-white font-medium">
+                            La banque n'a plus qu'à absorber tranquillement toutes ces ventes pour remplir son énorme
+                            ordre d'achat, puis faire exploser le prix à la hausse.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Les 3 conséquences (Comment la méthode LOG exploite ça) -->
+            <div class="grid md:grid-cols-3 gap-8 reveal">
+                <!-- Point 1 -->
+                <div
+                    class="bg-[#0a0a0a] border border-white/5 p-8 rounded-xl hover:bg-batman-950 hover:border-white/20 transition-all duration-300">
+                    <div class="text-batman-liquidity font-mono text-3xl mb-4 font-bold opacity-50">01.</div>
+                    <h4 class="text-white font-bold text-lg mb-3">L'Illusion Graphique</h4>
+                    <p class="text-white/50 text-sm leading-relaxed">
+                        Les "Double Bottoms" ou les "Supports" parfaits ne sont pas des barrages solides. Ce sont des
+                        appâts créés artificiellement par les algorithmes (Inducement). Leur but est de vous faire
+                        placer votre Stop-Loss juste en dessous, pour créer une piscine de liquidité qu'ils viendront
+                        vider plus tard.
+                    </p>
+                </div>
+
+                <!-- Point 2 -->
+                <div
+                    class="bg-[#0a0a0a] border border-white/5 p-8 rounded-xl hover:bg-batman-950 hover:border-white/20 transition-all duration-300">
+                    <div class="text-white font-mono text-3xl mb-4 font-bold opacity-30">02.</div>
+                    <h4 class="text-white font-bold text-lg mb-3">La Traces des Géants</h4>
+                    <p class="text-white/50 text-sm leading-relaxed">
+                        Une fois que la banque a absorbé tous vos Stop-Loss, elle injecte le reste de son capital. Ce
+                        mouvement est si violent qu'il laisse une trace visible sur le graphique : une inefficience (IPA
+                        / FVG). C'est le seul moment où les institutions ne peuvent pas se cacher.
+                    </p>
+                </div>
+
+                <!-- Point 3 -->
+                <div
+                    class="bg-[#0a0a0a] border border-white/5 p-8 rounded-xl hover:bg-batman-950 hover:border-white/20 transition-all duration-300 border-b-2 border-b-white">
+                    <div class="text-white font-mono text-3xl mb-4 font-bold">03.</div>
+                    <h4 class="text-white font-bold text-lg mb-3">La Méthode LOG</h4>
+                    <p class="text-white/50 text-sm leading-relaxed">
+                        Notre stratégie est simple : refuser d'être la liquidité. Nous attendons que les débutants se
+                        fassent balayer sur leurs faux supports (Sweep). Une fois le carnage terminé et les
+                        inefficiences créées, nous rentrons sur le marché <strong>exactement dans le sillage de
+                            l'algorithme bancaire</strong>.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- VIDEO SECTION -->
+    <section id="video-section" class="py-32 px-6 bg-batman-950 relative z-10">
+        <div class="absolute inset-0 bg-white/[0.01]"></div>
+        <div class="max-w-4xl mx-auto text-center mb-12 reveal relative z-10">
+            <div
+                class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                <span class="text-xs uppercase tracking-widest font-mono text-white/70">Masterclass Gratuite</span>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">La méthode en action.</h2>
+            <p class="text-white/60 text-lg">Prends de quoi noter. Je te montre exactement comment j'analyse les
+                graphiques tous les matins.</p>
+        </div>
+        <div class="max-w-5xl mx-auto reveal relative z-10">
+            <!-- Lecteur vidéo local -->
+            <div
+                class="relative aspect-video bg-batman-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl glow-box">
+                <video class="absolute inset-0 w-full h-full object-cover" controls preload="metadata"
+                    poster="https://img.youtube.com/vi/Pf7PyHPoFgQ/maxresdefault.jpg">
+                    <source src="2026-02-28 15-12-49.mov" type="video/mp4">
+                    Votre navigateur ne supporte pas la lecture vidéo.
+                </video>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- LA STRATÉGIE DETAILLÉE (TIMELINE) -->
+    <section id="strategy-section" class="py-32 px-6 bg-batman-900 border-t border-white/5 relative">
+        <div class="max-w-4xl mx-auto reveal text-center mb-32">
+            <h2 class="text-4xl md:text-6xl font-bold text-white mb-8">Le Plan de Bataille.</h2>
+            <p class="text-xl text-white/60 font-light leading-relaxed">
+                Voici le protocole exact, divisé en 3 timeframes (H1, M5, M1). <br>Aucune improvisation n'est tolérée.
+            </p>
+        </div>
+
+        <div class="max-w-6xl mx-auto relative timeline-line pb-20">
+
+            <!-- ETAPE 1 : H1 (ÉLARGIE ET DÉTAILLÉE) -->
+            <div class="relative reveal mb-40 z-10 w-full">
+                <!-- Numéro Timeline -->
+                <div
+                    class="hidden md:flex absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-batman-950 border border-white/20 rounded-full items-center justify-center z-20 text-white font-mono text-lg shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                    H1</div>
+
+                <div class="text-center max-w-3xl mx-auto mb-16 pt-8">
+                    <div
+                        class="text-white/30 font-mono text-sm mb-3 tracking-widest uppercase border-b border-white/10 pb-2 inline-block">
+                        Étape 01</div>
+                    <h3 class="text-3xl md:text-5xl font-bold text-white mb-6">Le Repérage (Macro H1)</h3>
+                    <p class="text-white/60 text-lg font-light leading-relaxed">
+                        Le marché est programmé pour délivrer le prix de manière équitable. Lorsqu'il ne le fait pas, il
+                        crée une <strong class="text-white">anomalie magnétique</strong>. C'est là que commence notre
+                        travail.
+                    </p>
+                </div>
+
+                <div class="flex flex-col gap-24">
+
+                    <!-- SOUS-PARTIE A : EPA vs IPA -->
+                    <div
+                        class="grid md:grid-cols-2 gap-12 items-center bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 md:p-10 shadow-xl relative z-10">
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-8 h-8 rounded bg-white/10 flex items-center justify-center">
+                                    <i data-lucide="microscope" class="w-4 h-4 text-white"></i>
+                                </div>
+                                <h4 class="text-2xl font-bold text-white">Le Concept d'Efficience</h4>
+                            </div>
+                            <p class="text-white/60 text-sm leading-relaxed mb-6">
+                                Dans une tendance, les institutions créent des mouvements de "Vente pour Achat" (Sell to
+                                Buy). C'est la réaction du prix par la suite qui détermine si le marché est efficient ou
+                                non.
+                            </p>
+                            <div class="space-y-5">
+                                <div class="pl-4 border-l-2 border-blue-500/50">
+                                    <h5 class="text-white font-semibold text-sm mb-1">EPA (Efficient Price Action)</h5>
+                                    <p class="text-white/50 text-xs leading-relaxed">Le prix crée une zone de vente,
+                                        puis impulse à la hausse. Pour être efficient, le prix <strong
+                                            class="text-white">doit revenir dans cette zone de vente initiale</strong>
+                                        pour refaire un achat. Le marché est sain et n'a aucune raison d'y revenir plus
+                                        tard.</p>
+                                </div>
+                                <div class="pl-4 border-l-2 border-green-500/50">
+                                    <h5 class="text-white font-semibold text-sm mb-1">IPA (Inefficient Price Action)
+                                    </h5>
+                                    <p class="text-white/50 text-xs leading-relaxed">Le prix crée une zone de vente et
+                                        s'envole. Lors de son repli, il fait un point bas <strong
+                                            class="text-white">au-dessus</strong> de la zone de vente, sans jamais y
+                                        revenir. Le prix est inefficient (IPA). Il laisse un vide magnétique derrière
+                                        lui.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-batman-950 rounded-xl border border-white/5 p-4 relative overflow-hidden">
+                            <svg viewBox="0 0 500 280" class="w-full h-auto">
+                                <!-- Fond grille -->
+                                <pattern id="grid-epa" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <rect width="20" height="20" fill="none" stroke="rgba(255,255,255,0.02)" />
+                                </pattern>
+                                <rect width="100%" height="100%" fill="url(#grid-epa)" />
+
+                                <!-- Ligne séparation -->
+                                <line x1="250" y1="0" x2="250" y2="280" stroke="rgba(255,255,255,0.1)"
+                                    stroke-dasharray="4 4" />
+
+                                <!-- TEXTES -->
+                                <text x="125" y="30" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="12"
+                                    text-anchor="middle">EPA (ÉQUILIBRÉ)</text>
+                                <text x="375" y="30" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="12"
+                                    text-anchor="middle">IPA (INÉFFICIENT)</text>
+
+                                <!-- === COTÉ EPA (GAUCHE) === -->
+                                <!-- Zone Sell To Buy -->
+                                <rect x="30" y="160" width="190" height="50" fill="rgba(59, 130, 246, 0.1)"
+                                    stroke="rgba(59, 130, 246, 0.3)" stroke-dasharray="2 2" />
+                                <text x="40" y="180" fill="#3b82f6" font-family="monospace" font-size="10">Zone "Sell to
+                                    Buy"</text>
+
+                                <!-- Mouvement de prix EPA -->
+                                <path d="M 40,80 L 80,190 L 130,60 L 170,175 L 220,40" fill="none" stroke="white"
+                                    stroke-width="2" stroke-linejoin="round" />
+
+                                <!-- Explications EPA -->
+                                <circle cx="80" cy="190" r="4" fill="#ef4444" /> <!-- Vente initiale -->
+                                <circle cx="170" cy="175" r="5" fill="#3b82f6" class="animate-pulse" />
+                                <!-- Retour dans la zone -->
+
+                                <path d="M 170,175 L 200,230" fill="none" stroke="#3b82f6" stroke-width="1" />
+                                <text x="130" y="245" fill="#3b82f6" font-family="monospace" font-size="10">Retour &
+                                    Mitigation</text>
+                                <text x="130" y="260" fill="rgba(255,255,255,0.5)" font-family="monospace"
+                                    font-size="9">Le prix est efficient (EPA)</text>
+
+
+                                <!-- === COTÉ IPA (DROITE) === -->
+                                <!-- Zone Sell To Buy Initiale -->
+                                <rect x="280" y="160" width="190" height="50" fill="rgba(59, 130, 246, 0.1)"
+                                    stroke="rgba(59, 130, 246, 0.3)" stroke-dasharray="2 2" />
+                                <text x="290" y="200" fill="#3b82f6" font-family="monospace" font-size="10">Zone "Sell
+                                    to Buy"</text>
+
+                                <!-- Mouvement de prix IPA -->
+                                <path d="M 290,80 L 330,190 L 380,50 L 420,110 L 470,20" fill="none" stroke="white"
+                                    stroke-width="2" stroke-linejoin="round" />
+
+                                <!-- Explications IPA -->
+                                <circle cx="330" cy="190" r="4" fill="#ef4444" /> <!-- Vente initiale -->
+                                <circle cx="420" cy="110" r="4" fill="white" /> <!-- Point bas trop haut -->
+
+                                <!-- Le Vide (IPA Gap) -->
+                                <rect x="390" y="110" width="60" height="50" fill="rgba(34, 197, 94, 0.15)"
+                                    stroke="#22c55e" stroke-dasharray="4 4" />
+                                <path d="M 420,135 L 450,135" fill="none" stroke="#22c55e" stroke-width="1" />
+                                <text x="455" y="138" fill="#22c55e" font-family="monospace" font-size="10"
+                                    font-weight="bold">IPA / VIDE</text>
+
+                                <text x="290" y="245" fill="#22c55e" font-family="monospace" font-size="10">Aucun retour
+                                    dans la zone</text>
+                                <text x="290" y="260" fill="rgba(255,255,255,0.5)" font-family="monospace"
+                                    font-size="9">Point bas formé trop haut = TRAP</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- SOUS-PARTIE B : SETUP HAUSSIER -->
+                    <div class="grid md:grid-cols-2 gap-12 items-center relative z-10">
+                        <div
+                            class="order-2 md:order-1 bg-batman-950 rounded-2xl border border-white/5 p-4 glow-green relative overflow-hidden">
+                            <div
+                                class="absolute top-4 left-4 text-[10px] font-mono text-batman-bullish uppercase tracking-widest bg-batman-bullish/10 px-2 py-1 rounded">
+                                Setup Achat (Long)</div>
+                            <svg viewBox="0 0 500 350" class="w-full h-auto mt-8">
+                                <rect width="100%" height="100%" fill="url(#grid-epa)" />
+
+                                <!-- 1. Zone Sell to Buy Originelle -->
+                                <rect x="30" y="220" width="440" height="50" fill="rgba(59, 130, 246, 0.1)"
+                                    stroke="rgba(59, 130, 246, 0.3)" stroke-dasharray="2 2" />
+                                <text x="40" y="260" fill="#3b82f6" font-family="monospace" font-size="12"
+                                    font-weight="bold">Zone "Sell to Buy"</text>
+
+                                <!-- 2. FVG Zone (Le vide IPA) -->
+                                <rect x="50" y="160" width="400" height="60" fill="rgba(34, 197, 94, 0.05)"
+                                    stroke="rgba(34, 197, 94, 0.3)" stroke-dasharray="4 4" />
+                                <text x="120" y="185" fill="rgba(34, 197, 94, 0.6)" font-family="monospace"
+                                    font-size="10">Inefficience (IPA) = Le prix n'est pas revenu</text>
+
+                                <!-- 3. Retail Support (Inducement / Traps) -->
+                                <line x1="150" y1="130" x2="330" y2="130" stroke="#eab308" stroke-width="1.5"
+                                    stroke-dasharray="6 4" />
+                                <text x="150" y="120" fill="#eab308" font-family="monospace" font-size="10"
+                                    font-weight="bold">$$$ TRAPS (Points bas formés au-dessus de la zone)</text>
+
+                                <!-- Price Action Path -->
+                                <!-- Sell to Buy -> Explosion -> Trap 1 -> Trap 2 -> Sweep -> Moon -->
+                                <path
+                                    d="M 20,180 L 70,240 L 120,40 L 180,130 L 220,80 L 270,130 L 300,100 L 350,245 L 430,30"
+                                    fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round" />
+
+                                <!-- Traps markers -->
+                                <circle cx="180" cy="130" r="4" fill="#ef4444" />
+                                <circle cx="270" cy="130" r="4" fill="#ef4444" />
+                                <text x="160" y="150" fill="#ef4444" font-size="9" font-family="monospace">Stop
+                                    Loss</text>
+                                <text x="250" y="150" fill="#ef4444" font-size="9" font-family="monospace">Stop
+                                    Loss</text>
+
+                                <!-- The Sweep & Mitigation -->
+                                <circle cx="350" cy="245" r="6" fill="#22c55e" class="animate-pulse" />
+                                <text x="365" y="250" fill="#22c55e" font-family="monospace" font-size="11"
+                                    font-weight="bold">Retour dans la zone (EPA)</text>
+
+                                <defs>
+                                    <marker id="arrow-green" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6"
+                                        markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#22c55e" />
+                                    </marker>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="order-1 md:order-2 md:pl-8">
+                            <h4 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                                <i data-lucide="trending-up" class="w-6 h-6 text-batman-bullish"></i>
+                                L'Anatomie d'un Achat
+                            </h4>
+                            <p class="text-white/60 text-sm leading-relaxed mb-6">
+                                La théorie de l'efficience appliquée à un trade haussier se décompose en 3 phases
+                                mécaniques strictes.
+                            </p>
+                            <ul class="space-y-4">
+                                <li class="bg-white/[0.02] border border-white/5 p-4 rounded text-sm">
+                                    <strong class="text-white block mb-1">1. La Création (Sell to Buy)</strong>
+                                    <span class="text-white/50">Les institutions créent une zone de "Vente pour Achat".
+                                        C'est notre seule et unique zone d'intervention.</span>
+                                </li>
+                                <li class="bg-white/[0.02] border border-white/5 p-4 rounded text-sm">
+                                    <strong class="text-batman-liquidity block mb-1">2. Les Traps
+                                        (Inefficience)</strong>
+                                    <span class="text-white/50">Le prix retrace mais fait des points bas <strong
+                                            class="text-white">au-dessus de la zone</strong>. Parce qu'ils ne sont pas
+                                        dans la zone, le prix est inefficient (IPA). Ces creux sont donc obligatoirement
+                                        des <strong class="text-white">TRAPS</strong>. Les débutants y voient un support
+                                        et achètent.</span>
+                                </li>
+                                <li class="bg-white/[0.02] border border-white/5 p-4 rounded text-sm">
+                                    <strong class="text-batman-bullish block mb-1">3. Le Retour dans la Zone</strong>
+                                    <span class="text-white/50">Le prix s'effondre pour balayer ces Traps (Sweep) et
+                                        vient <strong class="text-white">enfin dans la zone "Sell to Buy"</strong> pour
+                                        refaire un achat. Le marché est redevenu efficient, on peut entrer.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- SOUS-PARTIE C : SETUP BAISSIER -->
+                    <div class="grid md:grid-cols-2 gap-12 items-center relative z-10">
+                        <div class="md:pr-8 text-left md:text-right">
+                            <h4 class="text-2xl font-bold text-white mb-4 flex items-center md:justify-end gap-2">
+                                <i data-lucide="trending-down" class="w-6 h-6 text-batman-bearish"></i>
+                                L'Anatomie d'une Vente
+                            </h4>
+                            <p class="text-white/60 text-sm leading-relaxed mb-6">
+                                La logique est parfaitement symétrique pour parier à la baisse (Short). On attend que le
+                                marché corrige son inefficience avant d'entrer.
+                            </p>
+                            <ul class="space-y-4 text-left">
+                                <li class="bg-white/[0.02] border border-white/5 p-4 rounded text-sm">
+                                    <strong class="text-white block mb-1">1. La Création (Buy to Sell)</strong>
+                                    <span class="text-white/50">Les institutions créent une zone "d'Achat pour Vente".
+                                        C'est notre point d'origine.</span>
+                                </li>
+                                <li class="bg-white/[0.02] border border-white/5 p-4 rounded text-sm">
+                                    <strong class="text-batman-liquidity block mb-1">2. Les Traps
+                                        (Inefficience)</strong>
+                                    <span class="text-white/50">Le prix remonte mais forme des sommets <strong
+                                            class="text-white">en dessous de la zone</strong>. Parce qu'ils n'ont pas
+                                        touché la zone, le prix est inefficient (IPA). Ces sommets sont des <strong
+                                            class="text-white">TRAPS</strong>. Les Retail y voient une
+                                        résistance.</span>
+                                </li>
+                                <li class="bg-white/[0.02] border border-white/5 p-4 rounded text-sm">
+                                    <strong class="text-batman-bearish block mb-1">3. Le Retour dans la Zone</strong>
+                                    <span class="text-white/50">Impulsion haussière factice : les vendeurs précoces sont
+                                        stoppés (Sweep). Le prix <strong class="text-white">revient dans sa zone "Buy to
+                                            Sell"</strong> pour rééquilibrer les ordres (EPA), puis entame la vraie
+                                        chute.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div
+                            class="bg-batman-950 rounded-2xl border border-white/5 p-4 glow-red relative overflow-hidden">
+                            <div
+                                class="absolute top-4 right-4 text-[10px] font-mono text-batman-bearish uppercase tracking-widest bg-batman-bearish/10 px-2 py-1 rounded">
+                                Setup Vente (Short)</div>
+                            <svg viewBox="0 0 500 350" class="w-full h-auto mt-8">
+                                <rect width="100%" height="100%" fill="url(#grid-epa)" />
+
+                                <!-- 1. Zone Buy to Sell Originelle -->
+                                <rect x="30" y="50" width="440" height="50" fill="rgba(59, 130, 246, 0.1)"
+                                    stroke="rgba(59, 130, 246, 0.3)" stroke-dasharray="2 2" />
+                                <text x="40" y="80" fill="#3b82f6" font-family="monospace" font-size="12"
+                                    font-weight="bold">Zone "Buy to Sell"</text>
+
+                                <!-- 2. FVG Zone (Le vide IPA) -->
+                                <rect x="50" y="100" width="400" height="60" fill="rgba(239, 68, 68, 0.05)"
+                                    stroke="rgba(239, 68, 68, 0.3)" stroke-dasharray="4 4" />
+                                <text x="120" y="125" fill="rgba(239, 68, 68, 0.6)" font-family="monospace"
+                                    font-size="10">Inefficience (IPA) = Le prix n'est pas revenu</text>
+
+                                <!-- 3. Retail Resistance (Inducement / Traps) -->
+                                <line x1="150" y1="180" x2="330" y2="180" stroke="#eab308" stroke-width="1.5"
+                                    stroke-dasharray="6 4" />
+                                <text x="150" y="195" fill="#eab308" font-family="monospace" font-size="10"
+                                    font-weight="bold">$$$ TRAPS (Points hauts formés en dessous de la zone)</text>
+
+                                <!-- Price Action Path -->
+                                <!-- Buy to Sell -> Crash -> Trap 1 -> Trap 2 -> Sweep -> Hell -->
+                                <path
+                                    d="M 20,130 L 70,75 L 120,300 L 180,180 L 220,260 L 270,180 L 300,240 L 350,75 L 430,320"
+                                    fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round" />
+
+                                <!-- Traps markers -->
+                                <circle cx="180" cy="180" r="4" fill="#22c55e" />
+                                <circle cx="270" cy="180" r="4" fill="#22c55e" />
+                                <text x="160" y="170" fill="#22c55e" font-size="9" font-family="monospace">Stop
+                                    Loss</text>
+                                <text x="250" y="170" fill="#22c55e" font-size="9" font-family="monospace">Stop
+                                    Loss</text>
+
+                                <!-- The Sweep & Mitigation -->
+                                <circle cx="350" cy="75" r="6" fill="#ef4444" class="animate-pulse" />
+                                <text x="365" y="80" fill="#ef4444" font-family="monospace" font-size="11"
+                                    font-weight="bold">Retour dans la zone (EPA)</text>
+
+                                <defs>
+                                    <marker id="arrow-red" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6"
+                                        markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+                                    </marker>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ETAPE 2 : M5 -->
+            <div class="relative grid md:grid-cols-2 gap-16 items-center reveal mb-40 z-10">
+                <!-- Numéro Timeline -->
+                <div
+                    class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-batman-950 border border-white/20 rounded-full items-center justify-center z-20 text-white font-mono text-lg shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                    M5</div>
+
+                <div class="order-2 md:order-1 bg-batman-950 border border-white/10 p-2 md:p-8 rounded-2xl glow-box">
+                    <!-- SCHEMA M5 : CHOCH DÉTAILLÉ -->
+                    <div class="bg-batman-900 rounded-xl p-4 md:p-6 border border-white/5 relative overflow-hidden">
+                        <div class="absolute top-4 left-4 text-xs font-mono text-white/30 uppercase tracking-widest">Vue
+                            Tactique / M5</div>
+
+                        <svg viewBox="0 0 500 400" class="w-full h-auto mt-6">
+                            <!-- Grille de fond -->
+                            <pattern id="grid-m5" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <rect width="20" height="20" fill="none" stroke="rgba(255,255,255,0.02)" />
+                            </pattern>
+                            <rect width="100%" height="100%" fill="url(#grid-m5)" />
+
+                            <!-- H1 Zone Background (La zone d'intervention) -->
+                            <rect x="0" y="280" width="500" height="120" fill="rgba(59, 130, 246, 0.08)"
+                                stroke="rgba(59, 130, 246, 0.3)" stroke-dasharray="4 4" />
+                            <text x="20" y="380" fill="#3b82f6" font-family="monospace" font-size="14"
+                                font-weight="bold">Zone H1 ("Sell to Buy")</text>
+                            <text x="20" y="395" fill="rgba(59, 130, 246, 0.6)" font-family="monospace"
+                                font-size="10">Le marché redevient efficient ici</text>
+
+                            <!-- Ligne du dernier Lower High (Le Rempart) -->
+                            <line x1="240" y1="150" x2="480" y2="150" stroke="#ef4444" stroke-width="2"
+                                stroke-dasharray="6 4" />
+                            <text x="330" y="140" fill="#ef4444" font-family="monospace" font-size="12"
+                                font-weight="bold">Le Rempart (Dernier Lower High)</text>
+
+                            <!-- Candlesticks (Downtrend to Uptrend) -->
+                            <g stroke-width="1.5">
+                                <!-- Chute vers la zone H1 -->
+                                <line x1="80" y1="50" x2="80" y2="120" stroke="#ef4444" />
+                                <rect x="73" y="60" width="14" height="50" fill="#ef4444" />
+
+                                <line x1="120" y1="90" x2="120" y2="180" stroke="#ef4444" />
+                                <rect x="113" y="110" width="14" height="60" fill="#ef4444" />
+
+                                <!-- Retracement (Pullback) qui crée le Lower High -->
+                                <line x1="160" y1="150" x2="160" y2="200" stroke="#22c55e" />
+                                <rect x="153" y="160" width="14" height="30" fill="#22c55e" />
+
+                                <line x1="200" y1="120" x2="200" y2="170" stroke="#22c55e" />
+                                <rect x="193" y="130" width="14" height="30" fill="#22c55e" />
+
+                                <!-- La Vraie Chute (Le Sweep final dans la zone) -->
+                                <line x1="240" y1="120" x2="240" y2="220" stroke="#ef4444" />
+                                <rect x="233" y="150" width="14" height="60" fill="#ef4444" />
+                                <!-- C'est ce point haut qui est le rempart -->
+
+                                <line x1="280" y1="190" x2="280" y2="300" stroke="#ef4444" />
+                                <rect x="273" y="210" width="14" height="70" fill="#ef4444" />
+
+                                <line x1="320" y1="260" x2="320" y2="350" stroke="#ef4444" />
+                                <rect x="313" y="280" width="14" height="60" fill="#ef4444" />
+                                <!-- Contact avec la zone H1 -->
+
+                                <!-- L'Absorption et Le Rejet -->
+                                <line x1="360" y1="300" x2="360" y2="360" stroke="#22c55e" />
+                                <rect x="353" y="320" width="14" height="30" fill="#22c55e" /> <!-- Pinbar / Rejet -->
+
+                                <!-- The CHoCH Move (Bougies institutionnelles) -->
+                                <line x1="400" y1="180" x2="400" y2="330" stroke="#22c55e" />
+                                <rect x="393" y="200" width="14" height="120" fill="#22c55e" />
+                                <!-- Grosse bougie verte -->
+
+                                <line x1="440" y1="80" x2="440" y2="210" stroke="#22c55e" />
+                                <rect x="433" y="100" width="14" height="100" fill="#22c55e" />
+                                <!-- Clôture claire au-dessus du rempart -->
+                            </g>
+
+                            <!-- Indicateur de Clôture (Body Close) -->
+                            <circle cx="440" cy="100" r="4" fill="white" class="animate-pulse" />
+                            <path d="M 445,100 L 470,100" fill="none" stroke="white" stroke-width="1"
+                                stroke-dasharray="2 2" />
+                            <text x="475" y="103" fill="white" font-family="monospace" font-size="10">Clôture du
+                                corps</text>
+
+                            <!-- CHoCH Label -->
+                            <path d="M 430,150 L 460,150" fill="none" stroke="white" stroke-width="3" />
+                            <text x="470" y="155" fill="white" font-family="monospace" font-size="14"
+                                font-weight="bold">CHoCH !</text>
+
+                            <!-- Trace visuelle du mouvement M5 -->
+                            <path d="M 80,85 L 120,140 L 200,145 L 320,310 L 440,150" fill="none"
+                                stroke="rgba(255,255,255,0.15)" stroke-width="4" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="order-1 md:order-2 md:pl-8">
+                    <div
+                        class="text-white/30 font-mono text-sm mb-3 tracking-widest uppercase border-b border-white/10 pb-2 inline-block">
+                        Étape 02</div>
+                    <h3 class="text-3xl font-bold text-white mb-6">La Confirmation (Micro M5)</h3>
+                    <p class="text-white/60 text-lg font-light mb-8 leading-relaxed">
+                        Le prix a balayé la liquidité (Sweep) et vient de pénétrer dans notre zone H1. Le marché est
+                        redevenu efficient. L'attente est terminée, on zoome en 5 minutes pour chercher notre signal
+                        d'entrée.
+                    </p>
+
+                    <ul class="space-y-4">
+                        <li class="bg-white/[0.02] border border-white/5 p-4 rounded text-sm">
+                            <strong class="text-white block mb-1 flex items-center gap-2">
+                                <i data-lucide="crosshair" class="w-4 h-4 text-batman-bullish"></i>
+                                1. L'Absorption
+                            </strong>
+                            <span class="text-white/50">Le prix percute la zone H1. À ce stade, le couteau tombe encore.
+                                On n'achète <strong class="text-white">jamais</strong> à l'aveugle. On attend que les
+                                algorithmes absorbent les ventes.</span>
+                        </li>
+                        <li class="bg-white/[0.02] border border-white/5 p-4 rounded text-sm">
+                            <strong class="text-white block mb-1 flex items-center gap-2">
+                                <i data-lucide="shield" class="w-4 h-4 text-batman-bearish"></i>
+                                2. Le Rempart (Lower High)
+                            </strong>
+                            <span class="text-white/50">On identifie visuellement le dernier sommet M5 qui a causé le
+                                point le plus bas à l'intérieur de notre zone. C'est la ligne de défense (le rempart)
+                                des vendeurs. Tant qu'il tient, la tendance reste baissière.</span>
+                        </li>
+                        <li
+                            class="bg-white/[0.02] border border-white/5 p-4 rounded text-sm border-l-2 border-l-batman-bullish">
+                            <strong class="text-batman-bullish block mb-1 flex items-center gap-2">
+                                <i data-lucide="activity" class="w-4 h-4"></i>
+                                3. La Fracture (Le CHoCH)
+                            </strong>
+                            <span class="text-white/50">Une impulsion violente doit casser ce rempart. Attention :
+                                <strong class="text-white">le corps de la bougie doit clôturer au-dessus</strong>, une
+                                simple mèche ne suffit pas (cela serait un nouveau Trap). Cette fracture s'appelle le
+                                <strong>Change of Character (CHoCH)</strong>. C'est la preuve mathématique que les
+                                acheteurs ont repris le contrôle.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ETAPE 3 : M1 (COMPLÈTEMENT REFONDUE) -->
+            <div class="relative grid md:grid-cols-1 gap-12 items-start reveal z-10 max-w-5xl mx-auto">
+                <!-- Numéro Timeline -->
+                <div
+                    class="hidden md:flex absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-white border border-white rounded-full items-center justify-center z-20 text-black font-mono font-bold text-lg shadow-[0_0_30px_rgba(255,255,255,0.4)]">
+                    M1</div>
+
+                <div class="text-center md:w-2/3 mx-auto pt-8">
+                    <div
+                        class="text-white/30 font-mono text-sm mb-3 tracking-widest uppercase border-b border-white/10 pb-2 inline-block">
+                        Étape 03</div>
+                    <h3 class="text-3xl font-bold text-white mb-6">L'Exécution (Le Snipe en M1)</h3>
+                    <p class="text-white/60 text-lg font-light mb-12 leading-relaxed">
+                        Dès que le CHoCH est validé en M5, je trace ma grille de <strong
+                            class="text-white">Fibonacci</strong> sur cette nouvelle impulsion (du point le plus bas au
+                        nouveau plus haut). Je patiente jusqu'à ce que le prix retrace dans ma zone <strong
+                            class="text-white">OTE (Optimal Trade Entry : 62% - 79%)</strong>. Une fois dedans, je
+                        bascule en M1 et je dégaine selon 2 scénarios précis.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+
+                    <!-- CAS A : MOMENTUM -->
+                    <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 relative glow-box">
+                        <div
+                            class="absolute top-0 right-0 bg-red-500/20 text-red-400 text-[10px] px-4 py-2 rounded-bl-xl rounded-tr-2xl font-mono uppercase tracking-widest font-bold">
+                            A. Volatilité (Momentum)</div>
+
+                        <h4 class="text-xl font-bold text-white mb-3">Cassure d'iFVG</h4>
+                        <p class="text-white/50 text-sm leading-relaxed mb-6">
+                            Le prix chute agressivement dans l'OTE et crée un <strong class="text-red-400">FVG
+                                Baissier</strong> en M1. S'il se retourne et <strong class="text-white">casse violemment
+                                ce FVG à la hausse</strong>, le FVG est invalidé (iFVG). Je rentre <strong
+                                class="text-white">exactement à la cassure</strong>.
+                        </p>
+
+                        <div class="bg-batman-950 rounded-xl p-4 border border-white/5">
+                            <svg viewBox="0 0 400 300" class="w-full h-auto">
+                                <!-- Lignes Fibonacci -->
+                                <line x1="20" y1="30" x2="380" y2="30" stroke="rgba(255,255,255,0.1)"
+                                    stroke-dasharray="2 2" />
+                                <text x="25" y="25" fill="rgba(255,255,255,0.4)" font-family="monospace"
+                                    font-size="10">0.0 (Sommet de l'impulsion M5)</text>
+
+                                <line x1="20" y1="270" x2="380" y2="270" stroke="rgba(255,255,255,0.1)"
+                                    stroke-dasharray="2 2" />
+                                <text x="25" y="265" fill="rgba(255,255,255,0.4)" font-family="monospace"
+                                    font-size="10">1.0 (Bas de l'impulsion M5)</text>
+
+                                <!-- Zone OTE -->
+                                <rect x="20" y="140" width="360" height="70" fill="rgba(34, 197, 94, 0.05)"
+                                    stroke="rgba(34, 197, 94, 0.3)" stroke-dasharray="4 4" />
+                                <text x="25" y="155" fill="rgba(34, 197, 94, 0.6)" font-family="monospace"
+                                    font-size="10">Zone OTE (0.62 - 0.79)</text>
+
+                                <!-- FVG Baissier (qui sera cassé) -->
+                                <rect x="140" y="120" width="180" height="30" fill="rgba(239, 68, 68, 0.15)"
+                                    stroke="#ef4444" stroke-dasharray="2 2" />
+                                <text x="145" y="140" fill="#ef4444" font-family="monospace" font-size="10">FVG Baissier
+                                    (M1)</text>
+
+                                <!-- Price Action (Chute) -->
+                                <path d="M 60,30 L 90,80 L 120,170 L 160,200" fill="none" stroke="#ef4444"
+                                    stroke-width="2.5" stroke-linejoin="round" />
+
+                                <!-- Price Action (Explosion & Invalidation) -->
+                                <path d="M 160,200 L 180,180 L 220,60" fill="none" stroke="#22c55e" stroke-width="3"
+                                    stroke-linejoin="round" />
+
+                                <!-- Marqueur Invalidation (Croix) -->
+                                <path d="M 170,105 L 190,135" fill="none" stroke="#ef4444" stroke-width="2" />
+                                <path d="M 190,105 L 170,135" fill="none" stroke="#ef4444" stroke-width="2" />
+
+                                <!-- Point d'entrée -->
+                                <circle cx="204" cy="120" r="6" fill="#22c55e" class="animate-pulse" />
+                                <line x1="204" y1="120" x2="270" y2="120" stroke="white" stroke-width="1.5" />
+                                <text x="275" y="124" fill="white" font-family="monospace" font-size="12"
+                                    font-weight="bold">ENTRÉE (Cassure)</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- CAS B : CLASSIQUE -->
+                    <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 relative glow-box">
+                        <div
+                            class="absolute top-0 right-0 bg-blue-500/20 text-blue-400 text-[10px] px-4 py-2 rounded-bl-xl rounded-tr-2xl font-mono uppercase tracking-widest font-bold">
+                            B. Marché Lent (Classique)</div>
+
+                        <h4 class="text-xl font-bold text-white mb-3">Retest de FVG Haussier</h4>
+                        <p class="text-white/50 text-sm leading-relaxed mb-6">
+                            Le prix corrige calmement dans l'OTE et crée un <strong class="text-green-400">FVG
+                                Haussier</strong> propre en M1. Je place un ordre limite sur le haut de ce FVG et
+                            <strong class="text-white">je rentre sur le retest (mitigation)</strong> de ce dernier.
+                        </p>
+
+                        <div class="bg-batman-950 rounded-xl p-4 border border-white/5">
+                            <svg viewBox="0 0 400 300" class="w-full h-auto">
+                                <!-- Lignes Fibonacci -->
+                                <line x1="20" y1="30" x2="380" y2="30" stroke="rgba(255,255,255,0.1)"
+                                    stroke-dasharray="2 2" />
+                                <text x="25" y="25" fill="rgba(255,255,255,0.4)" font-family="monospace"
+                                    font-size="10">0.0 (Sommet de l'impulsion M5)</text>
+
+                                <line x1="20" y1="270" x2="380" y2="270" stroke="rgba(255,255,255,0.1)"
+                                    stroke-dasharray="2 2" />
+                                <text x="25" y="265" fill="rgba(255,255,255,0.4)" font-family="monospace"
+                                    font-size="10">1.0 (Bas de l'impulsion M5)</text>
+
+                                <!-- Zone OTE -->
+                                <rect x="20" y="140" width="360" height="70" fill="rgba(34, 197, 94, 0.05)"
+                                    stroke="rgba(34, 197, 94, 0.3)" stroke-dasharray="4 4" />
+                                <text x="25" y="155" fill="rgba(34, 197, 94, 0.6)" font-family="monospace"
+                                    font-size="10">Zone OTE (0.62 - 0.79)</text>
+
+                                <!-- FVG Haussier (qui sera retesté) -->
+                                <rect x="180" y="160" width="130" height="25" fill="rgba(34, 197, 94, 0.15)"
+                                    stroke="#22c55e" stroke-dasharray="2 2" />
+                                <text x="220" y="176" fill="#22c55e" font-family="monospace" font-size="10">FVG
+                                    Haussier</text>
+
+                                <!-- Price Action (Chute lente) -->
+                                <path d="M 60,30 L 90,110 L 130,200" fill="none" stroke="#ef4444" stroke-width="2.5"
+                                    stroke-linejoin="round" />
+
+                                <!-- Price Action (Réaction et Création du FVG) -->
+                                <path d="M 130,200 L 160,185 L 200,100" fill="none" stroke="#22c55e" stroke-width="2.5"
+                                    stroke-linejoin="round" />
+
+                                <!-- Price Action (Retest & Moon) -->
+                                <path d="M 200,100 L 230,160 L 270,60 L 310,20" fill="none" stroke="white"
+                                    stroke-width="3" stroke-linejoin="round" />
+
+                                <!-- Point d'entrée -->
+                                <circle cx="230" cy="160" r="6" fill="#22c55e" class="animate-pulse" />
+                                <line x1="230" y1="160" x2="290" y2="160" stroke="white" stroke-width="1.5" />
+                                <text x="295" y="164" fill="white" font-family="monospace" font-size="12"
+                                    font-weight="bold">ENTRÉE (Retest)</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GESTION DU RISQUE (NEW SECTION) -->
+    <section class="py-32 px-6 bg-batman-950 border-t border-white/5 relative overflow-hidden">
+        <!-- Lueur de fond -->
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-batman-bullish/5 rounded-full blur-[120px] pointer-events-none">
+        </div>
+
+        <div class="max-w-6xl mx-auto reveal relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-batman-900 text-xs text-white/50 uppercase tracking-widest mb-6 font-mono">
+                    <i data-lucide="calculator" class="w-3 h-3"></i> L'Asymétrie
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Les Mathématiques du <span
+                        class="text-white/30">Succès.</span></h2>
+                <p class="text-white/60 text-lg font-light leading-relaxed">
+                    Les traders amateurs cherchent à avoir raison 80% du temps, mais ruinent leur compte à la première
+                    erreur. Le secret institutionnel n'est pas de deviner le futur, c'est d'exploiter <strong
+                        class="text-white">l'asymétrie mathématique</strong>.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <!-- COLONNE GAUCHE : L'Explication -->
+                <div class="space-y-10">
+
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-4">L'Illusion du Winrate</h3>
+                        <p class="text-white/60 text-sm leading-relaxed mb-6">
+                            Avec la méthode LOG, votre point d'entrée M1 est tellement précis que votre Stop Loss est
+                            minuscule. Cela vous permet de viser des Ratio Risk/Reward (RR) de 1:3, 1:5 voire 1:10. Cela
+                            signifie que <strong class="text-white">lorsque vous avez tort, vous perdez 1%. Mais lorsque
+                                vous avez raison, vous gagnez 3% ou plus.</strong>
+                        </p>
+                        <p class="text-white/60 text-sm leading-relaxed">
+                            Conséquence mathématique absolue : vous n'avez besoin d'avoir raison que 3 à 4 fois sur 10
+                            pour être extrêmement rentable. Acceptez les pertes, elles font partie du modèle.
+                        </p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        <div class="bg-batman-900 border border-white/5 p-6 rounded-xl relative overflow-hidden group">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-red-500/50"></div>
+                            <i data-lucide="shield-alert" class="w-6 h-6 text-red-400 mb-4"></i>
+                            <h4 class="text-white font-bold mb-1">Le Bouclier (Risque)</h4>
+                            <p class="text-white/50 text-xs leading-relaxed">Stop Loss placé strictement sous le CHoCH.
+                                Vous ne risquez jamais plus de <strong class="text-white">1% de votre capital</strong>
+                                par trade. Une perte est une simple charge opérationnelle.</p>
+                        </div>
+
+                        <div class="bg-batman-900 border border-white/5 p-6 rounded-xl relative overflow-hidden group">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-green-500/50"></div>
+                            <i data-lucide="target" class="w-6 h-6 text-green-400 mb-4"></i>
+                            <h4 class="text-white font-bold mb-1">La Cible (Gain)</h4>
+                            <p class="text-white/50 text-xs leading-relaxed">Take Profit visé sur les sommets de
+                                liquidité (H1) ou la VWAP. L'objectif minimum exigé avant de prendre un trade est un
+                                <strong class="text-white">Ratio de 1:3 (+3%)</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLONNE DROITE : Le Schéma Graphique (Equity Curve) -->
+                <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 md:p-8 glow-box font-mono relative">
+                    <div class="flex justify-between items-center border-b border-white/10 pb-4 mb-6">
+                        <span class="text-xs text-white/40 uppercase tracking-widest">Simulation sur 10 Trades</span>
+                        <span class="text-xs bg-white/5 border border-white/10 px-2 py-1 rounded text-white/60">Winrate
+                            : 40%</span>
+                    </div>
+
+                    <!-- SCHEMA : Courbe de Capital -->
+                    <div class="w-full h-48 mb-8 relative border-b border-l border-white/10">
+                        <svg viewBox="0 0 500 200" class="w-full h-full overflow-visible">
+                            <defs>
+                                <linearGradient id="equity-grad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="rgba(34, 197, 94, 0.2)" />
+                                    <stop offset="100%" stop-color="rgba(34, 197, 94, 0)" />
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Lignes de repère -->
+                            <line x1="0" y1="120" x2="500" y2="120" stroke="rgba(255,255,255,0.1)"
+                                stroke-dasharray="4 4" />
+                            <text x="-25" y="125" fill="rgba(255,255,255,0.3)" font-size="10">0%</text>
+                            <line x1="0" y1="60" x2="500" y2="60" stroke="rgba(255,255,255,0.05)"
+                                stroke-dasharray="4 4" />
+                            <text x="-25" y="65" fill="rgba(255,255,255,0.3)" font-size="10">+3%</text>
+                            <line x1="0" y1="0" x2="500" y2="0" stroke="rgba(255,255,255,0.05)"
+                                stroke-dasharray="4 4" />
+                            <text x="-25" y="5" fill="rgba(255,255,255,0.3)" font-size="10">+6%</text>
+
+                            <!-- Zone sous la courbe -->
+                            <path
+                                d="M 0,120 L 50,140 L 100,160 L 150,100 L 200,120 L 250,140 L 300,160 L 350,100 L 400,120 L 450,60 L 500,0 L 500,200 L 0,200 Z"
+                                fill="url(#equity-grad)" />
+
+                            <!-- Ligne de l'Equity Curve -->
+                            <!-- Starts at 0, losses drop by 20px, wins jump by 60px -->
+                            <path
+                                d="M 0,120 L 50,140 L 100,160 L 150,100 L 200,120 L 250,140 L 300,160 L 350,100 L 400,120 L 450,60 L 500,0"
+                                fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linejoin="round" />
+
+                            <!-- Les points (Trades) -->
+                            <!-- T1 (-1%) -->
+                            <circle cx="50" cy="140" r="4" fill="#ef4444" />
+                            <!-- T2 (-1%) -->
+                            <circle cx="100" cy="160" r="4" fill="#ef4444" />
+                            <!-- T3 (+3%) -->
+                            <circle cx="150" cy="100" r="4" fill="#22c55e" />
+                            <!-- T4 (-1%) -->
+                            <circle cx="200" cy="120" r="4" fill="#ef4444" />
+                            <!-- T5 (-1%) -->
+                            <circle cx="250" cy="140" r="4" fill="#ef4444" />
+                            <!-- T6 (-1%) -->
+                            <circle cx="300" cy="160" r="4" fill="#ef4444" />
+                            <!-- T7 (+3%) -->
+                            <circle cx="350" cy="100" r="4" fill="#22c55e" />
+                            <!-- T8 (-1%) -->
+                            <circle cx="400" cy="120" r="4" fill="#ef4444" />
+                            <!-- T9 (+3%) -->
+                            <circle cx="450" cy="60" r="4" fill="#22c55e" />
+                            <!-- T10 (+3%) -->
+                            <circle cx="500" cy="0" r="6" fill="#22c55e" class="animate-pulse" />
+                        </svg>
+                    </div>
+
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between items-center text-red-400 bg-red-500/5 px-3 py-2 rounded">
+                            <span class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-red-500"></div> 6 Pertes (-1% de risque)
+                            </span>
+                            <span>- 6.00 %</span>
+                        </div>
+                        <div class="flex justify-between items-center text-green-400 bg-green-500/5 px-3 py-2 rounded">
+                            <span class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-green-500"></div> 4 Gains (Ratio de 1:3)
+                            </span>
+                            <span>+ 12.00 %</span>
+                        </div>
+                        <div
+                            class="flex justify-between items-center text-white text-lg pt-3 mt-2 border-t border-white/10 font-bold px-3">
+                            <span>Bénéfice Net</span>
+                            <span class="text-batman-bullish">+ 6.00 %</span>
+                        </div>
+                    </div>
+
+                    <p class="text-white/30 text-[10px] mt-6 leading-relaxed italic">
+                        *Regardez le graphique : même en subissant une série de 3 pertes consécutives (Drawdown), un
+                        seul trade gagnant efface instantanément les pertes et ramène le compte en positif. C'est la
+                        seule façon de survivre en trading.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LE FILTRE VWAP -->
+    <section class="py-24 px-6 bg-batman-900 border-t border-white/5">
+        <div class="max-w-4xl mx-auto reveal">
+            <div
+                class="bg-gradient-to-br from-batman-950 to-[#0a0a0a] border border-white/10 p-10 md:p-16 rounded-3xl relative overflow-hidden text-center shadow-[0_0_80px_rgba(255,255,255,0.03)]">
+                <!-- Background pattern -->
+                <div
+                    class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+')] opacity-30">
+                </div>
+
+                <i data-lucide="activity-square" class="w-14 h-14 text-white mx-auto mb-8 relative z-10 opacity-80"></i>
+                <div class="text-white/40 font-mono text-sm uppercase tracking-widest mb-4 relative z-10">La Confluence
+                    Ultime</div>
+                <h3 class="text-4xl md:text-5xl font-bold text-white mb-8 relative z-10">La théorie de l'élastique (VWAP
+                    Session)</h3>
+
+                <p class="text-white/70 max-w-2xl mx-auto font-light leading-relaxed relative z-10 text-lg mb-10">
+                    J'utilise l'indicateur <strong>VWAP Session</strong> avec ses bandes de déviation. Il affiche la
+                    moyenne du prix pondérée par le volume (Ligne centrale), encadrée par une bande supérieure et une
+                    bande inférieure. Le marché agit comme un élastique : s'il s'étire trop loin vers les bandes, la
+                    tension devient maximale et il finira par revenir violemment vers le milieu.
+                </p>
+
+                <!-- SCHEMA VWAP -->
+                <div class="bg-batman-900 border border-white/5 rounded-2xl p-6 relative z-10 mb-10 glow-box">
+                    <svg viewBox="0 0 600 300" class="w-full h-auto">
+                        <!-- Bande Supérieure (Vente) -->
+                        <path d="M 0,50 Q 150,30 300,60 T 600,50" fill="none" stroke="#ef4444" stroke-width="2"
+                            stroke-dasharray="4 2" />
+                        <rect x="0" y="0" width="600" height="50" fill="rgba(239, 68, 68, 0.05)" />
+                        <!-- Zone de surachat -->
+                        <text x="10" y="40" fill="#ef4444" font-family="monospace" font-size="12"
+                            font-weight="bold">Bande Supérieure (Zone d'élastique tendu = VENTE)</text>
+
+                        <!-- Ligne Centrale (VWAP) -->
+                        <path d="M 0,150 Q 150,130 300,160 T 600,150" fill="none" stroke="#eab308" stroke-width="3" />
+                        <text x="10" y="140" fill="#eab308" font-family="monospace" font-size="12"
+                            font-weight="bold">VWAP Session (Moyenne Pondérée par le Volume)</text>
+
+                        <!-- Bande Inférieure (Achat) -->
+                        <path d="M 0,250 Q 150,230 300,260 T 600,250" fill="none" stroke="#22c55e" stroke-width="2"
+                            stroke-dasharray="4 2" />
+                        <rect x="0" y="250" width="600" height="50" fill="rgba(34, 197, 94, 0.05)" />
+                        <!-- Zone de survente -->
+                        <text x="10" y="275" fill="#22c55e" font-family="monospace" font-size="12"
+                            font-weight="bold">Bande Inférieure (Zone d'élastique tendu = ACHAT)</text>
+
+                        <!-- Action du prix -->
+                        <!-- Départ VWAP -> Monte à la bande sup -> Crash à la bande inf -> Rebond vers VWAP -->
+                        <path d="M 50,150 L 120,80 L 180,30 L 250,120 L 320,280 L 400,240 L 480,160 L 550,155"
+                            fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round" />
+
+                        <!-- Marqueur : Rejet Vente Extreme -->
+                        <circle cx="180" cy="30" r="6" fill="#ef4444" class="animate-pulse" />
+                        <path d="M 180,45 L 180,90" fill="none" stroke="#ef4444" stroke-width="2"
+                            marker-end="url(#arrow-vwap-red)" />
+
+                        <!-- Marqueur : Rejet Achat Extreme -->
+                        <circle cx="320" cy="280" r="6" fill="#22c55e" class="animate-pulse" />
+                        <path d="M 320,265 L 320,210" fill="none" stroke="#22c55e" stroke-width="2"
+                            marker-end="url(#arrow-vwap-green)" />
+
+                        <defs>
+                            <marker id="arrow-vwap-red" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6"
+                                markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+                            </marker>
+                            <marker id="arrow-vwap-green" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6"
+                                markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#22c55e" />
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 relative z-10 text-left">
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-6">
+                        <div class="text-batman-bullish font-bold mb-2 flex items-center gap-2">
+                            <i data-lucide="trending-up" class="w-4 h-4"></i> Confluence pour un Achat
+                        </div>
+                        <p class="text-white/60 text-sm">Si mon setup d'achat (Étape 1 à 3) se déclenche alors que le
+                            prix est écrasé sur la <strong>Bande Inférieure</strong> de la VWAP, la probabilité explose.
+                            L'élastique va se détendre violemment vers le haut.</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-6">
+                        <div class="text-batman-bearish font-bold mb-2 flex items-center gap-2">
+                            <i data-lucide="trending-down" class="w-4 h-4"></i> Confluence pour une Vente
+                        </div>
+                        <p class="text-white/60 text-sm">Si mon setup de vente se déclenche alors que le prix est collé
+                            à la <strong>Bande Supérieure</strong>, le rejet sera massif. La VWAP centrale sert d'aimant
+                            naturel (Take Profit).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="py-24 px-6 bg-batman-950 border-t border-white/5">
+        <div class="max-w-3xl mx-auto reveal">
+            <h2 class="text-3xl font-bold text-white mb-2 text-center">Questions Fréquentes</h2>
+            <p class="text-white/40 text-center mb-12">Derniers réglages avant de passer aux graphiques.</p>
+
+            <div class="space-y-4">
+                <div class="border border-white/10 bg-[#0a0a0a] rounded-xl p-6 hover:border-white/30 transition-colors">
+                    <h4 class="text-white font-semibold mb-2 flex items-center gap-3">
+                        <i data-lucide="clock" class="w-5 h-5 text-white/50"></i>
+                        Quelles sessions de trading privilégier ?
+                    </h4>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        La liquidité est le carburant de cette stratégie. Pas de volume, pas de trade. Concentrez-vous
+                        uniquement sur l'ouverture de <strong>Londres</strong> (08h00 - 11h00 CET) et l'ouverture de
+                        <strong>New York</strong> (14h00 - 17h00 CET). Ne tradez jamais la session asiatique avec cette
+                        méthode.
+                    </p>
+                </div>
+
+                <div class="border border-white/10 bg-[#0a0a0a] rounded-xl p-6 hover:border-white/30 transition-colors">
+                    <h4 class="text-white font-semibold mb-2 flex items-center gap-3">
+                        <i data-lucide="bar-chart" class="w-5 h-5 text-white/50"></i>
+                        Sur quels actifs cela fonctionne-t-il le mieux ?
+                    </h4>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        Cette logique algorithmique est omniprésente. Cependant, elle est particulièrement propre sur
+                        les paires majeures du Forex (<strong>EURUSD, GBPUSD</strong>) car elles sont ultra-liquides, et
+                        sur les Indices boursiers (<strong>Nasdaq 100, S&P 500</strong>). Choisissez-en un seul pour
+                        commencer.
+                    </p>
+                </div>
+
+                <div class="border border-white/10 bg-[#0a0a0a] rounded-xl p-6 hover:border-white/30 transition-colors">
+                    <h4 class="text-white font-semibold mb-2 flex items-center gap-3">
+                        <i data-lucide="crosshair" class="w-5 h-5 text-white/50"></i>
+                        Comment backtester cette méthode correctement ?
+                    </h4>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        Ouvrez TradingView, prenez la fonction "Replay". Remontez 3 mois en arrière sur une seule paire.
+                        Appliquez machinalement : 1. Trouver le FVG H1. 2. Attendre le Sweep. 3. Descendre en M5 pour le
+                        CHoCH. 4. Entrer en M1. Notez chaque trade dans un journal Notion/Excel. Votre oeil va
+                        s'habituer en quelques jours.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section
+        class="py-32 px-6 relative flex flex-col items-center justify-center text-center border-t border-white/5 bg-batman-900 overflow-hidden">
+        <!-- Effets de fond -->
+        <div class="absolute inset-0 bg-white/[0.01]"></div>
+        <div
+            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-white/5 blur-[100px] rounded-full pointer-events-none">
+        </div>
+
+        <div class="relative z-10 reveal max-w-2xl mx-auto">
+            <h2 class="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">Passe à la pratique.</h2>
+            <p class="text-lg text-white/60 mb-12 font-light leading-relaxed">
+                Tu as maintenant le plan de bataille complet. Ne me crois pas sur parole : ouvre tes graphiques et
+                vérifie par toi-même. Rejoins le mouvement.
+            </p>
+            <div class="flex flex-col gap-5 items-center justify-center">
+                <a href="https://www.instagram.com/thry.log/" target="_blank" rel="noopener noreferrer"
+                    class="group relative inline-flex items-center justify-center gap-3 bg-white text-black px-12 py-5 text-sm font-bold uppercase tracking-widest transition-all duration-300 hover:bg-gray-200 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] hover:-translate-y-1 overflow-hidden cursor-pointer">
+                    <div
+                        class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none">
+                    </div>
+                    <i data-lucide="instagram" class="w-5 h-5 relative z-10 pointer-events-none"></i>
+                    <span class="relative z-10 pointer-events-none">Rejoindre la communauté</span>
+                </a>
+                <span class="text-xs text-white/40 uppercase tracking-widest font-mono">Gratuit &middot; Transparent
+                    &middot; Mécanique</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-12 px-6 border-t border-white/5 bg-batman-950">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="text-white font-bold tracking-widest text-sm uppercase flex items-center gap-2">
+                <i data-lucide="crosshair" class="w-4 h-4 text-white/50"></i>
+                <span>LA MÉTHODE LOG</span>
+            </div>
+            <div class="text-center md:text-right text-xs text-white/30 font-mono max-w-2xl leading-relaxed">
+                <p class="mb-3 text-white/50 uppercase tracking-widest">&copy; 2026 LA MÉTHODE LOG.</p>
+                <p class="text-[10px]">
+                    Avertissement Légal : Le trading sur marge (Forex, Indices, Crypto) comporte un niveau de risque
+                    élevé et peut ne pas convenir à tous les investisseurs. Vous pourriez subir une perte d'une partie
+                    ou de la totalité de votre investissement initial. Les informations fournies sur ce site le sont à
+                    des fins strictement éducatives.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts pour l'animation et les icônes -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Initialisation sécurisée de Lucide Icons pour éviter les erreurs de script globales
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.warn("L'affichage des icônes a rencontré une erreur ou est bloqué.");
+            }
+
+            // Ajout de l'animation CSS pour le bouton "shimmer" (reflet)
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes shimmer {
+                    100% { transform: translateX(100%); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Intersection Observer pour les animations d'apparition au scroll
+            const reveals = document.querySelectorAll(".reveal");
+
+            if (reveals.length > 0) {
+                const revealOnScroll = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("active");
+                            // On garde l'animation visible une fois affichée
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.15, // L'élément apparait quand 15% est visible
+                    rootMargin: "0px 0px -50px 0px"
+                });
+
+                reveals.forEach(reveal => {
+                    revealOnScroll.observe(reveal);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
